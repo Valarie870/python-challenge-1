@@ -1,5 +1,5 @@
 # Menu dictionary
-menu = {
+menu_items = {
     "Snacks": {
         "Cookie": .99,
         "Banana": .69,
@@ -11,39 +11,27 @@ menu = {
         "Teriyaki Chicken": 9.99,
         "Sushi": 7.49,
         "Pad Thai": 6.99,
-        "Pizza": {
-            "Cheese": 8.99,
-            "Pepperoni": 10.99,
-            "Vegetarian": 9.99
+        "Pizza - Cheese": 8.99,
+        "Pizza - Pepperoni": 10.99,
+        "Pizza - Vegetarian": 9.99,    
+        "Burger - Chicken": 7.49,
+        "Burger - Beef": 8.49
         },
-        "Burger": {
-            "Chicken": 7.49,
-            "Beef": 8.49
-        }
-    },
     "Drinks": {
-        "Soda": {
-            "Small": 1.99,
-            "Medium": 2.49,
-            "Large": 2.99
-        },
-        "Tea": {
-            "Green": 2.49,
-            "Thai iced": 3.99,
-            "Irish breakfast": 2.49
-        },
-        "Coffee": {
-            "Espresso": 2.99,
-            "Flat white": 2.99,
-            "Iced": 3.49
-        }
+        "Soda - Small": 1.99,
+        "Soda - Medium": 2.49,
+        "Soda - Large": 2.99,
+        "Tea - Green": 2.49,
+        "Tea - Thai iced": 3.99,
+        "Tea - Irish breakfast": 2.49,
+        "Coffee - Espresso": 2.99,
+        "Coffee - Flat white": 2.99,
+        "Coffee - Iced": 3.49
     },
     "Dessert": {
         "Chocolate lava cake": 10.99,
-        "Cheesecake": {
-            "New York": 4.99,
-            "Strawberry": 6.49
-        },
+        "Cheesecake - New York": 4.99,
+        "Cheesecake - Strawberry": 6.49,
         "Australian Pavlova": 9.99,
         "Rice pudding": 4.99,
         "Fried banana": 4.49
@@ -52,6 +40,32 @@ menu = {
 
 # 1. Set up order list. Order list will store a list of dictionaries for
 # menu item name, item price, and quantity ordered
+Order = []
+# [
+#     {
+#         "Item name": "string",
+#         "Price": float,
+#         "Quantity": int
+#     },
+#     {
+#         "Item name": "string",
+#         "Price": float,
+#         "Quantity": int
+#     },
+# ]
+
+
+# def print_menu():
+#     print("Menu:")
+#     for key, value in menu_items.items():
+#         print(f"{key}. {value['Item name']} - ${value['Price']:.2f}")
+
+# print_menu()
+
+# #key value
+# for key, value in menu_items.items():
+#     print(key,value)
+#     #print(f"{key}. {value['Item name']} - ${value['Price']:.2f}")
 
 
 # Launch the store and present a greeting to the customer
@@ -79,24 +93,24 @@ while place_order:
         i += 1
 
     # Get the customer's input
-    menu_category = input("Type menu number: ")
+    menu_selection = input("Type menu number: ")
 
     # Check if the customer's input is a number
-    if menu_category.isdigit():
+    if menu_selection.isdigit():
         # Check if the customer's input is a valid option
-        if int(menu_category) in menu_items.keys():
+        if int(menu_selection) in menu_items.keys():
             # Save the menu category name to a variable
-            menu_category_name = menu_items[int(menu_category)]
+            menu_selection_name = menu_items[int(menu_selection)]
             # Print out the menu category name they selected
-            print(f"You selected {menu_category_name}")
+            print(f"You selected {menu_selection_name}")
 
             # Print out the menu options from the menu_category_name
-            print(f"What {menu_category_name} item would you like to order?")
+            print(f"What {menu_selection_name} item would you like to order?")
             i = 1
             menu_items = {}
             print("Item # | Item name                | Price")
             print("-------|--------------------------|-------")
-            for key, value in menu[menu_category_name].items():
+            for key, value in menu[menu_selectionname].items():
                 # Check if the menu item is a dictionary to handle differently
                 if type(value) is dict:
                     for key2, value2 in value.items():
@@ -117,18 +131,72 @@ while place_order:
                         "Price": value
                     }
                     i += 1
-            # 2. Ask customer to input menu item number
 
+menu_selection = input("Enter your selection from the menu: ")
+
+# prompt customer to enter selection and validate input
+while True:
+    menu_selection = input("Enter your selection from the menu: ")
+    if not menu_selection.isdigit():
+        print("Invalid input. Please enter a number.")
+        continue
+    
+    menu_selection = int(menu_selection)
+    if menu_selection not in menu_items:
+        print("Selection not in menu. Please try again.")
+        continue
+    
+    item_name = menu_items[menu_selection]["Item name"]
+    price = menu_items[menu_selection]["Price"]
+    
+    quantity = input(f"Enter quantity for {item_name} (default 1): ")
+    if not quantity.isdigit():
+        quantity = 1
+    else:
+        quantity = int(quantity)
+    
+    order = {"Item name": item_name, "Price": price, "Quantity": quantity}
+    order_list.append(order)
+    
+    continue_ordering = input("Would you like to continue ordering? (y/n): ").lower()
+    if continue_ordering == "n":
+        break
+    elif continue_ordering != "y":
+        print("Invalid input. Please try again.")
+
+# Print order receipt
+print("Item name                 | Price  | Quantity")
+print("--------------------------|--------|----------")
+for order in order_list:
+    item_name = order["Item name"]
+    price = order["Price"]
+    quantity = order["Quantity"]
+    
+    item_spaces = " " * (26 - len(item_name))
+    price_spaces = " " * (6 - len(f"${price:.2f}"))
+    
+    print(f"{item_name}{item_spaces}| ${price:.2f}{price_spaces}| {quantity}")
+
+total_price = sum(order["Price"] * order["Quantity"] for order in order_list)
+print(f"Total: ${total_price:.2f}")
+
+
+
+
+
+            # 2. Ask customer to input menu item number
+            menu_selection = input("Type menu number: ")
 
             # 3. Check if the customer typed a number
-
+            if menu_selection.isdigit():
                 # Convert the menu selection to an integer
+                menu_selection = int(menu_selection)
 
 
                 # 4. Check if the menu selection is in the menu items
-
+                if (menu_selection) in menu_items.keys():
                     # Store the item name as a variable
-
+                    item_name = menu_items[menu_selection] ["item name"] 
 
                     # Ask the customer for the quantity of the menu item
 
@@ -178,8 +246,26 @@ print("This is what we are preparing for you.\n")
 # Uncomment the following line to check the structure of the order
 #print(order)
 
+# loop through items in customer order
+
 print("Item name                 | Price  | Quantity")
 print("--------------------------|--------|----------")
+
+for order in order_list:
+    item_name = order["Item name"]
+    price = order["Price"]
+    quantity = order["Quantity"]
+    
+    item_spaces = " " * (26 - len(item_name))
+    price_spaces = " " * (6 - len(f"${price:.2f}"))
+    
+    print(f"{item_name}{item_spaces}| ${price:.2f}{price_spaces}| {quantity}")
+
+# Calculate the total price
+total_price = sum(order["Price"] * order["Quantity"] for order in order_list)
+print("--------------------------|--------|----------")
+print(f"Total                    |        | ${total_price:.2f}")
+
 
 # 6. Loop through the items in the customer's order
 
